@@ -1,13 +1,15 @@
 {
   "name": "semente",
-  "owner": { "name": "Alex" },
-  "metadata": { "description": "Marketplace da familia Semente", "version": "0.1.0" },
+  "owner": { "name": "Alexandre Camerini" },
+  "metadata": {
+    "description": "Marketplace pessoal — familia Semente",
+    "version": "2.0.0"
+  },
   "plugins": [
     {
       "name": "broto",
       "source": "./",
-      "description": "Broto faz um projeto nascer certo: do briefing ao repo instrumentado, com design antes do codigo, custo no teto e gate humano.",
-      "version": "0.3.0"
+      "description": "Do escopo a loja: cria, prova e publica aplicativos com IA, guiando quem nao e dev."
     }
   ]
 }

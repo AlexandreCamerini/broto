@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Resultado dos gates",
+  "type": "object",
+  "required": ["executado_em", "pack", "resumo", "gates"],
+  "properties": {
+    "executado_em": { "type": "string" },
+    "pack": { "type": "string" },
+    "resumo": {
+      "type": "object",
+      "required": ["total", "passou", "falhou", "bloqueado"],
+      "properties": {
+        "total": { "type": "integer" },
+        "passou": { "type": "integer" },
+        "falhou": { "type": "integer" },
+        "pulou": { "type": "integer" },
+        "bloqueado": { "type": "boolean" }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status", "bloqueante"],
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "enum": ["pass", "fail", "skip"] },
+          "bloqueante": { "type": "boolean" },
+          "comando": { "type": "string" },
+          "medido": { "type": "string" },
+          "limite": { "type": "string" },
+          "como_corrigir": { "type": "string" },
+          "tentativas": { "type": "integer" }
+        }
+      }
+    }
+  }
+}
