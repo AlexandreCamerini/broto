@@ -1,58 +1,78 @@
-<p align="center"><img src="brand/logo/broto-wordmark.svg" width="240" alt="broto"></p>
-<p align="center"><b>Projeto que nasce certo.</b><br>Do briefing ao repo instrumentado. Barato, guiado, com você no controle.</p>
+# Broto
 
-```
-/broto novo "app de hidratação para iPhone e Watch, sem dados compartilhados"
-```
+Do escopo à loja. Um plugin do Claude Code que conduz alguém **que não programa** desde "tenho uma ideia" até o aplicativo publicado, testado e com custo sob controle.
 
-Broto é um plugin do Claude Code da família [Semente](https://semente.dev). Ele faz quatro perguntas, pesquisa os melhores apps do seu nicho hoje, escreve o design antes do código, decide arquitetura dentro do teto de custo que você deu, e monta o ambiente de desenvolvimento com os cinco sinais que fazem um agente de código acertar mais: tipo, lint, correção, contexto e UX. Nada é escrito no seu repositório antes de você dizer sim.
+Família Semente.
 
-## Para quem
-Qualquer pessoa que cria software com agentes: do leigo ao orquestrador experiente. O perfil que você preenche uma vez (`/broto setup`) regula quanto ele explica.
+## O que ele faz de diferente
 
-## Instalar
-```
-/plugin marketplace add <owner>/broto
-/plugin install broto@<marketplace>
-/reload-plugins
-/broto setup
-```
+A maioria dos geradores de projeto entrega um repositório configurado e vai embora. O Broto cobre o ciclo inteiro — e o ponto onde as pessoas realmente desistem não é a criação, é a publicação.
 
-## Comandos
-| Comando | O que faz |
+| Estágio | Entrega |
 |---|---|
-| `/broto` | menu guiado |
-| `/broto setup` | seu perfil: custo, plataforma, exigência de UX, nível (8 perguntas, todas com default) |
-| `/broto novo "<descrição>"` | projeto do zero |
-| `/broto refactor <caminho>` | projeto existente |
-| `/broto status` | o que está pronto, o que falta, custo mensal |
+| 1. Descobrir | Briefing em português comum, escopo cortado para a versão 1 |
+| 2. Decidir | Arquitetura decidida (não um menu), plano validado por schema, custo declarado |
+| 3. Construir | App rodando com a ação principal funcionando de ponta a ponta |
+| 4. Provar | Gates executáveis com veredito em JSON — "funciona" vira fato medido |
+| 5. Publicar | Conformidade, assinatura, deploy, loja, verificação externa |
 
-## O que ele entrega
+## Princípios inegociáveis
+
+- **Chave de API nunca no cliente.** Todo app com IA nasce com proxy, rate limit e teto de gasto. É gate bloqueante, não recomendação.
+- **Uma pergunta por vez, em linguagem de produto.** Nunca "qual estratégia de auth?" — sempre "as pessoas precisam de conta?".
+- **Default opinativo.** Menu técnico para leigo é paralisia. O plugin decide, anuncia e segue.
+- **Prova, não promessa.** Qualidade de referência de mercado só vale se for medível por comando: contraste, Core Web Vitals, cold start, acerto do eval de IA, ausência de segredo no histórico do git.
+- **Não-destrutivo.** Dry-run é o padrão. Branch própria, commit por etapa, diff antes.
+- **Custo antes do lançamento.** Três cenários (10/100/1000 usuários), preço consultado na hora — nunca de memória.
+
+## Instalação
+
+```bash
+/plugin marketplace add AlexandreCamerini/broto
+/plugin install broto@semente
 ```
-docs/design-research.md   3 apps correlatos + 2 novidades de UX, com fonte e data
-docs/design-brief.md      navegação, direção de arte com tokens, aposta, critérios de aceite
-docs/adr/0001-*.md        decisão de arquitetura com custo mensal datado e gatilho de revisão
-.claude/setup-plan.json   plano de ambiente já criticado (cortes e vetos registrados)
-GUIA.md                   tudo acima em linguagem simples + o que VOCÊ instala, com "confira com"
-CLAUDE.md (≤60 linhas)    o contrato que o agente lê em toda sessão
+
+Em desenvolvimento do próprio plugin, prefira carregar direto da pasta:
+
+```bash
+claude --plugin-dir ~/dev/broto
 ```
 
-## Princípios
-1. **Cinco sinais, custo mínimo.** Ferramenta sem sinal é dívida.
-2. **Design antes de código.** Com referências vivas do mercado, datadas.
-3. **Custo em dólar em toda decisão.** Preço confirmado ao vivo, nunca de memória.
-4. **Núcleo portátil, casca nativa.** Use o máximo do OS na casca; o núcleo não importa SDK de plataforma. Ver `references/platform-fit.md`.
-5. **Humano aprova.** Nada é escrito, instalado ou pago sem gate.
+## Uso
 
-## Marca
-Identidade completa em `brand/BRAND.md` (posicionamento, voz, cores com contraste testado, tipografia, logo em SVG, tokens CSS/JSON).
+| Comando | Para |
+|---|---|
+| `/broto:novo` | começar ou retomar |
+| `/broto:status` | onde estou e qual o próximo passo |
+| `/broto:provar` | rodar os gates agora |
+| `/broto:publicar` | ir para a publicação |
+| `/broto:custo` | quanto a IA vai custar por mês |
 
-## Dívida conhecida
-- Preços e "melhores apps" envelhecem; tudo fica datado, mas quem reabre é você.
-- Dart/Flutter não tem plugin LSP oficial: sinal de tipo via hook `dart analyze`.
-- `swift-lsp` exige projeto resolvido; o primeiro verify em repo Xcode novo pode falhar até o resolve de pacotes.
-- Gate de UX por screenshot precisa de simulador; não existe em CI sem macOS.
-- Nome "Broto" sem busca de marca registrada.
+Linguagem natural também funciona — "acho que tá pronto pra mostrar pros outros" cai no estágio 5.
+
+## Arquitetura de agentes
+
+Cada nó no tier mais barato que vence a barra. Orquestração e decisão no topo.
+
+| Agente | Tier | Papel |
+|---|---|---|
+| `scout` | Haiku | levantamento de fatos, sem opinião |
+| `compliance-scout` | Haiku | exigências de loja, LGPD, acessibilidade — sempre pesquisadas |
+| `ux-director` | Sonnet | referências reais com URL, todos os estados de tela |
+| `toolchain-planner` | Sonnet | plano em comandos executáveis, com verificação por etapa |
+| `qa-runner` | Sonnet | executa gates, corrige, nunca afrouxa limite |
+| `release-engineer` | Sonnet | assinatura, deploy, loja, verificação externa |
+| `ai-architect` | Opus | modelo por tarefa, guardrails, eval, custo |
+| `arch-decider` | Opus | decisão final, resolve conflito por prioridade declarada |
+
+## Requisitos
+
+`git`, `jq`, e o toolchain do pack escolhido (Node, Xcode ou JDK). `scripts/preflight.sh` verifica e diz o que falta.
+
+## Estado do projeto do usuário
+
+Tudo em `.broto/` na raiz do projeto gerado. Versionado, exceto `.broto/segredos.env`.
 
 ## Licença
-MIT.
+
+MIT

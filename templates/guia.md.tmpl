@@ -1,39 +1,45 @@
-# GUIA — <projeto>
+# Guia do {{APP_NOME}}
 
-Leia de cima para baixo. Cada bloco termina com o que voce faz.
+Escrito para voce, nao para programador.
 
-## 1. O que decidimos (3 linhas)
-- Produto: <frase>
-- Como vai ser feito: <stack + hospedagem, sem jargao>
-- Quanto custa por mes: US$ <X> (<fonte, data>)
+## O que este app faz
+{{UMA_FRASE}}
 
-## 2. Como o app vai parecer
-- Referencias vivas: <3 apps + 2 novidades, com data> — em `docs/design-research.md`
-- Navegacao: <padrao> — <por que>
-- Direcao de arte: <3 palavras> — tokens em `docs/design-brief.md`
-- A aposta: <uma frase ou "nenhuma">
-**Voce faz:** ler o brief e dizer "ok" ou o que muda.
-
-## 3. O que o critico cortou e por que
-- <item> — <motivo em linguagem simples>
-
-## 4. O que vai ser escrito no repo (nada disso e executado ainda)
-- `<arquivo>` — <para que serve>
-
-## 5. O que VOCE instala (copie e cole, um por vez)
+## Como abrir no seu computador
+```bash
+{{COMANDO_RODAR}}
 ```
-<comando>        # por que
-# confira: <comando de verificacao>
+Depois abra: {{URL_LOCAL}}
+
+## Onde ele esta no ar
+{{URL_PRODUCAO}}
+
+## Como mudar as coisas mais comuns
+| Quero mudar | Onde |
+|---|---|
+| Texto da tela inicial | `{{ARQ_HOME}}` |
+| Cores | `{{ARQ_TOKENS}}` |
+| O que a IA responde | `{{ARQ_PROMPT}}` |
+| Quem pode entrar | `{{ARQ_AUTH}}` |
+
+## Como publicar uma atualizacao
+```bash
+{{COMANDO_PUBLICAR}}
 ```
 
-## 6. Como saber que deu certo
-```
-scripts/verify_lsp.sh <linguagem>
-```
-Resultado esperado: `== RESULTADO: pronto`. Se der pendencia, cole a saida aqui.
+## Quanto custa
+{{CUSTO_RESUMO}}
 
-## 7. O que esta rodada do Broto gastou
-- <N> buscas web, <M> chamadas de tier alto
+Teto de gasto configurado: {{IA_TETO}}. Se estourar, o app degrada em vez de gerar fatura.
 
-## 8. Premissas que assumi sem te perguntar
-- <premissa> — diga se estiver errada
+## O que NAO mexer
+- `.broto/segredos.env` — suas chaves. Nunca mande para o GitHub nem para ninguem.
+- `.broto/plano.json` — se precisar mudar arquitetura, peca ao Broto: `/broto:novo`.
+- Arquivos de assinatura/certificado. Perder o keystore do Android significa perder o app na loja.
+
+## Quando quebrar
+1. Peca: `/broto:provar` — ele testa e conserta o que der.
+2. Se nao resolver: `/broto:status` diz em que pe esta e qual o proximo passo.
+
+## Proximos passos que voce ja tinha em mente
+{{VERSAO_2}}

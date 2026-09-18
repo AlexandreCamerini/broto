@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plano Broto",
+  "type": "object",
+  "required": ["versao", "app", "pack", "arquitetura", "qualidade", "distribuicao"],
+  "additionalProperties": false,
+  "properties": {
+    "versao": { "const": 2 },
+    "app": {
+      "type": "object",
+      "required": ["nome", "uma_frase", "acao_principal"],
+      "properties": {
+        "nome": { "type": "string", "minLength": 1 },
+        "uma_frase": { "type": "string", "minLength": 1 },
+        "acao_principal": { "type": "string", "minLength": 1 }
+      }
+    },
+    "pack": { "enum": ["web", "ios", "android", "multi", "ferramenta"] },
+    "arquitetura": {
+      "type": "object",
+      "required": ["stack", "dados", "auth", "ia"],
+      "properties": {
+        "stack": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "dados": { "type": "object", "required": ["onde", "guarda_dado_de_terceiro"], "properties": {
+          "onde": { "type": "string" },
+          "guarda_dado_de_terceiro": { "type": "boolean" }
+        }},
+        "auth": { "enum": ["nenhuma", "email", "social", "magic-link"] },
+        "ia": {
+          "type": "object",
+          "required": ["usa", "proxy_obrigatorio"],
+          "properties": {
+            "usa": { "type": "boolean" },
+            "proxy_obrigatorio": { "const": true },
+            "tarefas": { "type": "array", "items": {
+              "type": "object",
+              "required": ["nome", "tier", "streaming"],
+              "properties": {
+                "nome": { "type": "string" },
+                "tier": { "enum": ["haiku", "sonnet", "opus"] },
+                "streaming": { "type": "boolean" },
+                "saida": { "enum": ["texto", "json"] }
+              }
+            }},
+            "eval_minimo": { "type": "number", "minimum": 0, "maximum": 1 },
+            "teto_gasto_brl_mes": { "type": "number", "exclusiveMinimum": 0 }
+          },
+          "allOf": [{
+            "if": { "properties": { "usa": { "const": true } } },
+            "then": { "required": ["tarefas", "eval_minimo", "teto_gasto_brl_mes"] }
+          }]
+        }
+      }
+    },
+    "qualidade": {
+      "type": "object",
+      "required": ["gates"],
+      "properties": {
+        "gates": { "type": "array", "minItems": 5, "items": {
+          "type": "object",
+          "required": ["id", "bloqueante", "limite"],
+          "properties": {
+            "id": { "type": "string" },
+            "bloqueante": { "type": "boolean" },
+            "limite": { "type": "string" }
+          }
+        }}
+      }
+    },
+    "distribuicao": {
+      "type": "object",
+      "required": ["alvo", "passos", "custos_declarados"],
+      "properties": {
+        "alvo": { "type": "string" },
+        "passos": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "custos_declarados": { "type": "array", "items": {
+          "type": "object",
+          "required": ["item", "valor", "recorrencia"],
+          "properties": {
+            "item": { "type": "string" },
+            "valor": { "type": "string" },
+            "recorrencia": { "enum": ["unico", "mensal", "anual"] }
+          }
+        }}
+      }
+    }
+  }
+}

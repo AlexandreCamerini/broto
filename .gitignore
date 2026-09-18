@@ -1,3 +1,14 @@
+# Segredos e estado local do usuario final (nunca versionar)
+.broto/segredos.env
+.broto/cache/
+*.p12
+*.mobileprovision
+.env
+.env.*
+!.env.example
+
+# Sistema
 .DS_Store
-*.bak.*
-.broto/profile.md
+node_modules/
+dist/
+build/
