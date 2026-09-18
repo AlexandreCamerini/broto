@@ -1,0 +1,13 @@
+{
+  "name": "semente",
+  "owner": { "name": "Alex" },
+  "metadata": { "description": "Marketplace da familia Semente", "version": "0.1.0" },
+  "plugins": [
+    {
+      "name": "broto",
+      "source": "./",
+      "description": "Broto faz um projeto nascer certo: do briefing ao repo instrumentado, com design antes do codigo, custo no teto e gate humano.",
+      "version": "0.3.0"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "broto",
+  "version": "0.3.0",
+  "description": "Broto faz um projeto nascer certo: do briefing ao repo instrumentado, com design baseado em referencias vivas, custo no teto que voce definiu, casca nativa com nucleo portatil e um humano aprovando cada passo. Familia Semente.",
+  "author": { "name": "Alex" },
+  "homepage": "https://semente.dev",
+  "license": "MIT",
+  "keywords": ["bootstrap", "scaffold", "lsp", "ux", "cost", "apple", "railway"]
+}

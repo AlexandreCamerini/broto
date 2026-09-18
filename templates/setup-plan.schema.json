@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "setup-plan",
+  "type": "object",
+  "required": [
+    "project",
+    "mode",
+    "assumptions",
+    "signals",
+    "writes",
+    "manual_steps",
+    "context_cost",
+    "monthly_cost_usd"
+  ],
+  "properties": {
+    "project": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "novo",
+        "refactor"
+      ]
+    },
+    "assumptions": {
+      "type": "array",
+      "description": "Premissas assumidas sem confirmacao do usuario. Visiveis no gate.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "signals": {
+      "type": "object",
+      "description": "Os quatro sinais do loop de feedback. Cada um preenchido ou explicitamente nulo com motivo.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/signal"
+        },
+        "lint": {
+          "$ref": "#/$defs/signal"
+        },
+        "correctness": {
+          "$ref": "#/$defs/signal"
+        },
+        "context": {
+          "$ref": "#/$defs/signal"
+        },
+        "ux": {
+          "$ref": "#/$defs/signal"
+        }
+      }
+    },
+    "writes": {
+      "type": "array",
+      "description": "Arquivos que serao criados no repo. Nada fora desta lista pode ser escrito.",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "purpose",
+          "overwrite"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "overwrite": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "manual_steps": {
+      "type": "array",
+      "description": "Comandos que o HUMANO executa. O agente nunca roda estes.",
+      "items": {
+        "type": "object",
+        "required": [
+          "command",
+          "why"
+        ],
+        "properties": {
+          "command": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          },
+          "verify": {
+            "type": "string",
+            "description": "comando que prova que funcionou"
+          }
+        }
+      }
+    },
+    "context_cost": {
+      "type": "object",
+      "required": [
+        "plugins_enabled",
+        "mcps_enabled"
+      ],
+      "properties": {
+        "plugins_enabled": {
+          "type": "integer"
+        },
+        "mcps_enabled": {
+          "type": "integer"
+        },
+        "scope": {
+          "enum": [
+            "project",
+            "global"
+          ]
+        },
+        "rationale": {
+          "type": "string"
+        }
+      }
+    },
+    "critique": {
+      "type": "object",
+      "description": "Preenchido pelo setup-critic. Plano sem este campo nao vai ao gate.",
+      "properties": {
+        "verdict": {
+          "enum": [
+            "aprovado",
+            "aprovado_com_cortes",
+            "reprovado"
+          ]
+        },
+        "cuts": {
+          "type": "array"
+        },
+        "vetoes": {
+          "type": "array"
+        }
+      }
+    },
+    "monthly_cost_usd": {
+      "type": "object",
+      "required": [
+        "total",
+        "items",
+        "verified_on"
+      ],
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "usd"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "usd": {
+                "type": "number"
+              },
+              "source": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "verified_on": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "signal": {
+      "type": "object",
+      "required": [
+        "tool",
+        "command",
+        "rationale"
+      ],
+      "properties": {
+        "tool": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "command": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "binary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "manual": {
+          "type": "boolean",
+          "default": false
+        },
+        "rationale": {
+          "type": "string",
+          "description": "O que quebra se este sinal nao existir."
+        }
+      }
+    }
+  }
+}

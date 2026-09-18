@@ -1,0 +1,16 @@
+:root{
+  --broto-verde:#1B7F47; --broto-ambar:#8A5A10;
+  --broto-tinta:#14201A; --broto-papel:#FFFFFF;
+  --broto-ok:#1B7F47; --broto-erro:#B42318;
+  --broto-font-display:"Space Grotesk",system-ui,sans-serif;
+  --broto-font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --broto-radius:8px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --broto-verde:#5FD08A; --broto-ambar:#E3A23A;
+  --broto-tinta:#E8F1EB; --broto-papel:#0E1512;
+}}
+:root[data-theme="dark"]{
+  --broto-verde:#5FD08A; --broto-ambar:#E3A23A;
+  --broto-tinta:#E8F1EB; --broto-papel:#0E1512;
+}
