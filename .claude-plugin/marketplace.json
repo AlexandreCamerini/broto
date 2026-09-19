@@ -1,6 +1,8 @@
 {
   "name": "semente",
-  "owner": { "name": "Alexandre Camerini" },
+  "owner": {
+    "name": "Alexandre Camerini"
+  },
   "metadata": {
     "description": "Marketplace pessoal — familia Semente",
     "version": "2.0.0"
@@ -9,7 +11,9 @@
     {
       "name": "broto",
       "source": "./",
-      "description": "Do escopo a loja: cria, prova e publica aplicativos com IA, guiando quem nao e dev."
+      "description": "Do escopo a loja: cria, prova e publica aplicativos com IA, guiando quem nao e dev.",
+      "version": "2.2.0"
     }
-  ]
+  ],
+  "version": "2.2.0"
 }

@@ -15,7 +15,7 @@ Enquanto rodam, diga a pessoa o que esta acontecendo em linguagem comum: "estou 
 
 ## Passo 2 — Decisao
 
-`arch-decider` (Opus, effort alto) recebe as quatro saidas + briefing e produz `plano.json`.
+`arch-decider` (Opus, effort alto) recebe as quatro saidas + briefing e produz `plano.json`. **A saida do `ux-director` entra integral em `plano.ux`**, sem resumo: ela e o contrato que o Estagio 3 implementa e que o gate `ux` mede. Plano sem `ux` nao valida.
 
 Conflitos sao resolvidos por esta ordem de prioridade:
 
@@ -50,7 +50,10 @@ Traduza o plano em no maximo 8 linhas, **zero jargao**:
 > - Seus dados ficam num banco gratuito ate ~500 usuarios
 > - A chave da IA fica num servidor seu, nunca dentro do app
 > - Custo estimado: R$ X por mes com 100 pessoas usando
+> - Vai parecer assim: <tom da direcao visual em meia linha>, inspirado em <ref 1> e <ref 2>
 > Pode ser?"
+
+Mostre as capturas de referencia (`.broto/cache/refs/`). E a unica chance de a pessoa dizer "nao gosto dessa cara" antes de existir codigo.
 
 Registre cada decisao relevante em `.broto/decisoes.md` no formato: **decisao / porque / o que perderiamos com a alternativa**.
 

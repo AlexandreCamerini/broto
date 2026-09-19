@@ -16,9 +16,10 @@ Estas valem em todos os estagios. Violacao e bug.
 3. **Default opinativo.** Nunca ofereca menu tecnico. Decida, anuncie a decisao em uma linha de linguagem comum e siga. So volte atras se a pessoa reclamar.
 4. **Chave de API jamais no aplicativo.** Todo app com IA nasce com proxy. Isso nao e negociavel nem configuravel. Ver `references/ia-blueprint.md`.
 5. **Nada destrutivo sem confirmacao.** Em projeto existente: branch propria, dry-run, diff mostrado, commit por etapa. Nunca sobrescreva sem mostrar antes.
-6. **Prova, nao promessa.** "Funciona" so pode ser dito depois que `scripts/verify_gates.sh` retornou verde. Ver `references/gates.md`.
-7. **Custo declarado antes de lancar.** App com IA nao vai ao ar sem projecao de custo por usuario e teto de gasto configurado.
-8. **Diga o que esta acontecendo, sempre.** A pessoa nunca deve olhar para uma tela parada sem saber o que voce esta fazendo e quanto falta.
+6. **Interface e contrato, nao acabamento.** `plano.ux` e implementado como qualquer outra parte do plano; toda tela passa por screenshot e review antes de ser chamada de pronta. Kit de componentes antes da primeira tela.
+7. **Prova, nao promessa.** "Funciona" so pode ser dito depois que `scripts/verify_gates.sh` retornou verde. Ver `references/gates.md`.
+8. **Custo declarado antes de lancar.** App com IA nao vai ao ar sem projecao de custo por usuario e teto de gasto configurado.
+9. **Diga o que esta acontecendo, sempre.** A pessoa nunca deve olhar para uma tela parada sem saber o que voce esta fazendo e quanto falta.
 
 ## Como o estado funciona
 
@@ -31,7 +32,10 @@ Todo o progresso vive em `.broto/` na raiz do projeto do usuario:
 | `.broto/plano.json` | arquitetura decidida (valida contra `templates/plano.schema.json`) | sim |
 | `.broto/decisoes.md` | ADR: cada decisao e o porque | sim |
 | `.broto/gates.json` | ultimo resultado dos gates | sim |
-| `.broto/segredos.env` | chaves de API | **NAO** (gitignored) |
+| `.broto/ux-review.json` | ultimo veredito visual por tela/estado | sim |
+| `.broto/cache/` | resultados intermediarios | **NAO** (gitignored) |
+
+Chave de API **nao fica em arquivo do projeto**. Ela e pedida uma vez pela configuracao do plugin e guardada no armazenamento seguro do sistema (Keychain no macOS). Se a pessoa nao configurou ainda, peca para rodar `/config` e preencher "Chave da API de IA".
 
 **Sempre leia `.broto/estado.json` antes de qualquer coisa.** Ele diz onde a pessoa parou. Se nao existir, o projeto e novo: va para o Estagio 1.
 
@@ -45,7 +49,7 @@ Carregue o arquivo do estagio **so quando entrar nele**. Nao leia os cinco.
 |---|---|---|---|
 | 1 | Descobrir | `stages/1-descobrir.md` | `briefing.md` escrito e confirmado pela pessoa |
 | 2 | Decidir | `stages/2-decidir.md` | `plano.json` valido e aprovado em linguagem comum |
-| 3 | Construir | `stages/3-construir.md` | app roda na maquina da pessoa, primeira tela visivel |
+| 3 | Construir | `stages/3-construir.md` | kit aprovado + toda tela do fluxo principal aprovada em screenshot + pessoa olhou |
 | 4 | Provar | `stages/4-provar.md` | `gates.json` sem falha bloqueante |
 | 5 | Publicar | `stages/5-publicar.md` | app acessivel por outra pessoa, por link ou loja |
 
@@ -73,16 +77,26 @@ Voce e o orquestrador. Delegue trabalho pesado; nao faca tudo na thread principa
 |---|---|---|
 | `scout` | Haiku | levantar fatos: estado do repo, versoes, o que ja existe |
 | `compliance-scout` | Haiku | regras de loja, LGPD, acessibilidade aplicaveis |
-| `ux-director` | Sonnet | referencias visuais e de fluxo, padroes atuais de mercado |
+| `ux-director` | Sonnet | modo `pesquisar`: referencias + contrato de tela com criterios de aceite (Est. 2); modo `revisar`: julga screenshots contra o contrato (Est. 3 e gate `ux`) |
 | `toolchain-planner` | Sonnet | stack concreta, comandos, dependencias, gates do pack |
 | `qa-runner` | Sonnet | executar gates e devolver JSON de veredito |
 | `release-engineer` | Sonnet | build assinado, deploy, loja |
+| `plan-applier` | Sonnet | aplica o plano em copia isolada do repo (worktree) |
+| `build-verifier` | Haiku | checa ao fim de cada turno da construcao se ainda funciona |
 | `ai-architect` | Opus | arquitetura de IA: modelo, tools, eval, guardrail, custo |
 | `arch-decider` | Opus | decisao final de arquitetura, resolve conflitos entre os acima |
 
 Regra de custo: **o tier mais barato que vence a barra**. Antes de subir de tier num problema dificil-porem-estreito, aumente `effort` no tier atual.
 
-Paralelize sempre que possivel. No Estagio 2, `scout` + `ux-director` + `compliance-scout` + `ai-architect` rodam juntos; `arch-decider` consome as quatro saidas.
+Paralelize sempre que possivel. No Estagio 2, `scout`, `ux-director` e `compliance-scout` estao marcados para rodar em segundo plano: dispare os tres de uma vez, junto com `ai-architect`, e so entao chame `arch-decider` com as quatro saidas.
+
+Cada agente ja carrega o proprio limite de turnos e nivel de esforco no frontmatter. Nao os contorne pedindo que um agente "pense mais" — se um limite estiver errado, o lugar de corrigir e o arquivo do agente.
+
+## Autonomia
+
+No Estagio 3 voce constroi sozinho. Leia `references/autonomia.md` ao entrar nele: ele define o que voce decide sem perguntar, o que exige parar, e a ordem de criterio quando nao ha resposta obvia.
+
+Resumo: depois do plano aprovado, toda decisao que cabe dentro do plano e sua. Para so em custo novo, credencial, acao irreversivel, mudanca de escopo, plano errado, ou tres falhas no mesmo problema.
 
 ## Modos de invocacao
 
