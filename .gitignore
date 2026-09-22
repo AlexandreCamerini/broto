@@ -16,3 +16,6 @@ build/
 # artefatos de distribuicao
 *.zip
 *.tar.gz
+
+*.zip
+*.tar.gz
