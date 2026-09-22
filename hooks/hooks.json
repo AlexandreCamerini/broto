@@ -1,14 +1,43 @@
 {
-  "hooks": {
-    "PreToolUse": [
-      { "matcher": "Write|Edit",
-        "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/guarda.sh\"", "timeout": 5 } ] }
-    ],
-    "SessionStart": [
-      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/contexto.sh\"", "timeout": 5 } ] }
-    ],
-    "SubagentStop": [
-      { "hooks": [ { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/metricas.sh\" agente nome=\"${CLAUDE_AGENT_NAME:-?}\"", "timeout": 5 } ] }
+ "hooks": {
+  "PreToolUse": [
+   {
+    "matcher": "Write|Edit",
+    "hooks": [
+     {
+      "type": "command",
+      "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/guarda.sh\"",
+      "timeout": 5
+     },
+     {
+      "type": "command",
+      "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/guarda_chave.sh\"",
+      "timeout": 5
+     }
     ]
-  }
+   }
+  ],
+  "SessionStart": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/contexto.sh\"",
+      "timeout": 5
+     }
+    ]
+   }
+  ],
+  "SubagentStop": [
+   {
+    "hooks": [
+     {
+      "type": "command",
+      "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/metricas.sh\" agente nome=\"${CLAUDE_AGENT_NAME:-?}\"",
+      "timeout": 5
+     }
+    ]
+   }
+  ]
+ }
 }
