@@ -1,46 +1,32 @@
-# Pack: ios
+# Pack ios — SwiftUI, iPhone e Mac
 
-Para iPhone/iPad com distribuicao pela App Store.
+## Ferramentas
+Xcode completo (nao so Command Line Tools), `xcodegen` se o projeto usa `project.yml`, `swiftformat`, `swiftlint`. Plugin `swift-lsp` do diretorio oficial para erro de tipo no mesmo turno. Sem Xcode, o estado `kit` nao comeca: tela escrita sem compilar e tela escrita as cegas.
 
-## Pre-requisitos inegociaveis
-- Mac com Xcode
-- Conta Apple Developer paga (custo anual) — **avise sobre isso no Estagio 2**, nao no 5
-- Apple ID com 2FA
+## Tokens
+`scripts/tokens.sh ios` gera `Kit/DesignSystem.swift`: `enum Cor`, `enum Tipo`, `enum Espaco`, `enum Movimento`, com variante clara e escura via `Color(light:dark:)`. Tipografia sempre por `Font.custom(..., relativeTo:)` ou estilo do sistema — nunca `.system(size:)` cru, senao a escala dinamica quebra.
 
-## Toolchain padrao
-- SwiftUI nativo quando o app e so iOS
-- Dados locais: persistencia nativa do sistema
-- Backend/IA: proxy proprio; nunca chave no bundle
-- Distribuicao de teste: TestFlight
+## Harness de captura (obrigatorio no estado `kit`)
+No ponto de entrada, dentro de `#if DEBUG`: leia `ProcessInfo.processInfo.environment["BROTO_TELA"]` no formato `tela:estado`. Presente, monte aquela tela naquele estado com dados de exemplo como raiz, pulando login e onboarding. `kit:<componente>` abre a galeria do componente. Logue `BROTO_PRONTO` quando a primeira tela montar. Em Release nada disso existe.
 
-## Harness de captura (obrigatorio, passo 5 do Estagio 3)
-No `App` (ponto de entrada), em `#if DEBUG`: leia `ProcessInfo.processInfo.environment["BROTO_SCREEN"]` (formato `tela:estado`). Se presente, injete um `PreviewData` correspondente e apresente aquela tela naquele estado como raiz, pulando login/onboarding. `kit:<componente>` abre uma galeria do componente. Sem isso `scripts/screenshots.sh` nao tem como capturar e o gate `ux` falha por falta de evidencia. Em Release o bloco nao existe.
+Sem harness nao ha screenshot, sem screenshot nao ha veredito, e sem veredito nada e "pronto".
 
-No destino Mac, o mesmo harness le a variavel via `open -n --env`; a captura e por `screencapture -l<windowid>`.
+## Reuso do prototipo
+As Views do kit sao as Views de producao. Ganham `@State`, `@Observable` e chamadas ao nucleo; nao sao recriadas. `scripts/gates/kit.sh` reprova `Color(red:`, `Color(hex:`, `.font(.system(size:`, `.padding(<numero cru>)` e `.cornerRadius(<numero cru>)` fora de `Kit/`.
 
-## Gates do pack
-| id | limite |
+## Provas do pack
+| gate | comando |
 |---|---|
-| `build` | `xcodebuild` para simulador sem erro (archive assinado fica para o Estagio 5) |
-| `ux` | toda tela do fluxo, nos 4 estados, `aprovada` no review; no projeto com dois destinos, iPhone E Mac |
-| `perf` | cold start <= 2s em dispositivo de 2 geracoes atras |
-| `a11y` | VoiceOver navega a acao principal; Dynamic Type sem corte de texto |
-| `privacy` | privacy manifest declarado e coerente com o que o app coleta |
-| `assets` | icone e capturas em todos os tamanhos exigidos |
+| `build` | `xcodebuild` para simulador, sem assinatura |
+| `smoke` | XCUITest da acao primaria da jornada |
+| `a11y` | XCUITest com `performAccessibilityAudit()` |
+| `perf` | tempo do launch ate `BROTO_PRONTO` |
+| `assets` | icone 1024 no catalogo e capturas nos tamanhos da loja |
+| `privacidade` | manifesto de privacidade declara as APIs que o codigo usa, e existe texto de permissao para cada permissao pedida |
 
-## Distribuicao — passo a passo assistido
-1. Bundle ID no portal da Apple
-2. Certificado e perfil (Xcode automatico quando possivel)
-3. Politica de privacidade em URL publica
-4. Ficha da App Store: nome, subtitulo, descricao, palavras-chave, capturas
-5. Archive -> upload -> TestFlight
-6. Convidar 1 pessoa real para testar antes de submeter
-7. Submissao para review
+`privacidade` fica mesmo em piloto: nao e burocracia, e bloqueio de build e de submissao.
 
 ## Armadilhas
-- Tela escrita sem Xcode instalado e tela escrita as cegas. Preflight bloqueia o Estagio 3 sem `xcodebuild -version`.
-- "Tela minima" da fatia vertical nao e tela final. O estagio so fecha com a passada de UI completa.
-- Review rejeita app que e "so um site empacotado". Precisa de funcao nativa real.
-- Bem digital vendido dentro do app: comissao da Apple e obrigatoriedade de In-App Purchase.
-- Privacy manifest incompleto derruba o upload, nao o review — o erro aparece tarde.
-- Senha de certificado: a pessoa digita. Voce nunca pede nem guarda.
+- `swift-lsp` so responde com pacotes resolvidos; rode o resolve antes do primeiro verify.
+- Projeto com dois destinos: capture iPhone **e** Mac; o que funciona num nao funciona no outro.
+- Mac Catalyst entrega iPad esticado. Dois destinos nativos com nucleo compartilhado custa quase o mesmo e entrega Mac de verdade.

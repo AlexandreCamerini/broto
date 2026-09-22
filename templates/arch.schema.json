@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "arch",
+  "type": "object",
+  "required": ["versao", "stack", "nucleo", "casca", "entidades", "operacoes", "hospedagem"],
+  "properties": {
+    "versao": { "type": "integer" },
+    "stack": { "type": "object", "required": ["pack", "porque"],
+      "properties": { "pack": {"enum":["ios","web","flutter"]}, "linguagens": {"type":"array","items":{"type":"string"}}, "porque": {"type":"string"} } },
+    "nucleo": { "type": "object", "required": ["caminho"],
+      "properties": { "caminho": {"type":"string"}, "regra": {"type":"string","default":"nenhum import de SDK de plataforma"} } },
+    "casca": { "type": "array", "items": { "type": "object", "required": ["capacidade","porta","adaptador"],
+      "properties": { "capacidade": {"type":"string"}, "porta": {"type":"string"}, "adaptador": {"type":"string"} } } },
+    "entidades": { "type": "array", "items": { "type": "object", "required": ["nome","campos"],
+      "properties": { "nome": {"type":"string"}, "campos": {"type":"array","items":{"type":"string"}}, "relacoes": {"type":"array","items":{"type":"string"}} } } },
+    "operacoes": { "type": "array", "items": { "type": "object", "required": ["nome","entrada","saida","telas"],
+      "properties": { "nome": {"type":"string"}, "entrada": {"type":"string"}, "saida": {"type":"string"},
+        "telas": {"type":"array","items":{"type":"string"},"description":"ids de tela que usam esta operacao — e o que liga arch a journey"} } } },
+    "hospedagem": { "type": "object", "required": ["perfil","escolha","custo_mensal_usd","preco_consultado_em","gatilho_revisao"],
+      "properties": { "perfil": {"enum":["sem-backend","crud-leve","com-ia","tempo-real"]},
+        "escolha": {"type":"string"}, "custo_mensal_usd": {"type":"number"},
+        "preco_consultado_em": {"type":"string","format":"date"},
+        "economia": {"type":"array","items":{"type":"string"}},
+        "gatilho_revisao": {"type":"string"} } },
+    "limites": { "type": "object", "properties": { "bundle_kb": {"type":"integer"}, "cold_start_ms": {"type":"integer"} } }
+  }
+}

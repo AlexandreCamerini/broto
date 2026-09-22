@@ -1,78 +1,61 @@
-# Broto
+# Broto v4
 
-Do escopo à loja. Um plugin do Claude Code que conduz alguém **que não programa** desde "tenho uma ideia" até o aplicativo publicado, testado e com custo sob controle.
+Do briefing ao app publicavel. Um comando.
 
-Família Semente.
+```
+/broto "app de controle de plantas pro iPhone"
+```
 
-## O que ele faz de diferente
+## Os seis invariantes
 
-A maioria dos geradores de projeto entrega um repositório configurado e vai embora. O Broto cobre o ciclo inteiro — e o ponto onde as pessoas realmente desistem não é a criação, é a publicação.
+1. Todo artefato tem um leitor e um gate.
+2. O contrato manda — `journey.yaml` e `arch.yaml` sao a fonte de verdade.
+3. O prototipo e o produto — o kit aprovado e o codigo que vai para producao.
+4. Prova, nao promessa — gate bloqueante sem comando falha, nunca pula.
+5. Julgamento e booleano — sem nota de modelo; o que da para medir, mede-se por script.
+6. A pessoa aprova duas vezes — a direcao de arte, e o app pronto.
 
-| Estágio | Entrega |
+## Como funciona
+
+```
+contrato  →  arte  →  kit  →  construcao  →  prova
+            ▲ voce escolhe           voce aprova ▲
+```
+
+- **contrato**: `journey.yaml` (telas, 4 estados cada, uma acao primaria) + `arch.yaml` (entidades, operacoes, nucleo/casca, hospedagem com custo mensal datado).
+- **arte**: 3 direcoes visuais distintas, com referencias reais e amostra visivel. Voce escolhe. Vira `tokens.json` (DTCG) e dele o arquivo nativo: `DesignSystem.swift`, `tokens.css` ou `tokens.dart`.
+- **kit**: componentes e telas vazias em codigo de producao, so com tokens, sobre componentes nativos. Capturados, julgados por criterio booleano, vistos por voce.
+- **construcao**: logica nas telas ja aprovadas. Hook bloqueia tela antes do kit.
+- **prova**: `gates.sh` roda tudo. Placar em portugues no fim.
+
+## Cinco agentes
+
+`scout` (haiku) le o repo · `arquiteto` (opus) arquitetura e hospedagem · `designer` (opus) jornada, arte e kit · `juiz` (sonnet) olha screenshot cego ao codigo · `construtor` (sonnet) implementa e prova.
+
+## O que impede o retrabalho
+
+| Problema classico | Mecanismo |
 |---|---|
-| 1. Descobrir | Briefing em português comum, escopo cortado para a versão 1 |
-| 2. Decidir | Arquitetura decidida (não um menu), plano validado por schema, custo declarado |
-| 3. Construir | App rodando com a ação principal funcionando de ponta a ponta |
-| 4. Provar | Gates executáveis com veredito em JSON — "funciona" vira fato medido |
-| 5. Publicar | Conformidade, assinatura, deploy, loja, verificação externa |
+| Documento de UX que ninguem le | `journey.yaml` alimenta o kit e o gate `contrato` |
+| Prototipo jogado fora | `gates/kit.sh` reprova valor cru fora do kit; o componente do kit e o de producao |
+| "Tela minima" virando tela final | hook `guarda.sh` + gate `interface` com os 4 estados |
+| Spec que deriva do codigo | `gates/deriva.sh` invalida **so** as telas cujo contrato mudou |
+| Gate que passa verde sem rodar | bloqueante sem comando = fail |
+| Nota de UI inventada por modelo | criterios booleanos; contraste e a11y medidos por script |
 
-## Princípios inegociáveis
+## Instalar
 
-- **Chave de API nunca no cliente.** Todo app com IA nasce com proxy, rate limit e teto de gasto. É gate bloqueante, não recomendação.
-- **Uma pergunta por vez, em linguagem de produto.** Nunca "qual estratégia de auth?" — sempre "as pessoas precisam de conta?".
-- **Default opinativo.** Menu técnico para leigo é paralisia. O plugin decide, anuncia e segue.
-- **Prova, não promessa.** Qualidade de referência de mercado só vale se for medível por comando: contraste, Core Web Vitals, cold start, acerto do eval de IA, ausência de segredo no histórico do git.
-- **Não-destrutivo.** Dry-run é o padrão. Branch própria, commit por etapa, diff antes.
-- **Custo antes do lançamento.** Três cenários (10/100/1000 usuários), preço consultado na hora — nunca de memória.
-
-## Instalação
-
-```bash
-/plugin marketplace add AlexandreCamerini/broto
+```
+/plugin marketplace add <owner>/broto
 /plugin install broto@semente
+/reload-plugins
 ```
+Ferramentas por plataforma no `skills/broto/packs/<pack>.md`.
 
-Em desenvolvimento do próprio plugin, prefira carregar direto da pasta:
+## Divida conhecida
 
-```bash
-claude --plugin-dir ~/dev/broto
-```
-
-## Uso
-
-| Comando | Para |
-|---|---|
-| `/broto:novo` | começar ou retomar |
-| `/broto:status` | onde estou e qual o próximo passo |
-| `/broto:provar` | rodar os gates agora |
-| `/broto:publicar` | ir para a publicação |
-| `/broto:custo` | quanto a IA vai custar por mês |
-
-Linguagem natural também funciona — "acho que tá pronto pra mostrar pros outros" cai no estágio 5.
-
-## Arquitetura de agentes
-
-Cada nó no tier mais barato que vence a barra. Orquestração e decisão no topo.
-
-| Agente | Tier | Papel |
-|---|---|---|
-| `scout` | Haiku | levantamento de fatos, sem opinião |
-| `compliance-scout` | Haiku | exigências de loja, LGPD, acessibilidade — sempre pesquisadas |
-| `ux-director` | Sonnet | referências reais com URL, todos os estados de tela |
-| `toolchain-planner` | Sonnet | plano em comandos executáveis, com verificação por etapa |
-| `qa-runner` | Sonnet | executa gates, corrige, nunca afrouxa limite |
-| `release-engineer` | Sonnet | assinatura, deploy, loja, verificação externa |
-| `ai-architect` | Opus | modelo por tarefa, guardrails, eval, custo |
-| `arch-decider` | Opus | decisão final, resolve conflito por prioridade declarada |
-
-## Requisitos
-
-`git`, `jq`, e o toolchain do pack escolhido (Node, Xcode ou JDK). `scripts/preflight.sh` verifica e diz o que falta.
-
-## Estado do projeto do usuário
-
-Tudo em `.broto/` na raiz do projeto gerado. Versionado, exceto `.broto/segredos.env`.
-
-## Licença
-
-MIT
+- Captura depende de harness `BROTO_TELA` no app; sem ele nao ha veredito (por design, mas e trabalho manual na primeira vez).
+- `telas.sh` acha o `.app` pelo DerivedData; projeto com varios schemes pode pegar o errado.
+- Dart nao tem LSP oficial: sinal de tipo mais lento no pack flutter.
+- O juiz e um so. E proposital (dois modelos da mesma familia erram junto), mas significa que gosto continua sendo seu.
+- Preco de hospedagem envelhece; o `arch.yaml` guarda a data, quem reabre e voce.

@@ -1,36 +1,19 @@
-# Pack: web
+# Pack web — React, Vite, Capacitor
 
-Para site, webapp, dashboard, SaaS, PWA instalavel.
+## Ferramentas
+Node, `typescript-language-server` + plugin `typescript-lsp`, biome ou eslint+prettier, Playwright para captura.
 
-## Toolchain padrao
-- Runtime: Node LTS
-- App: framework React com roteamento e renderizacao no servidor
-- Estilo: utilitario com tokens de design; componentes acessiveis por padrao
-- Dados: Postgres gerenciado com camada de auth pronta
-- Proxy de IA: rota server-side do proprio app (nao expor chave ao browser)
-- Hospedagem: plataforma com deploy por git push e HTTPS automatico
+## Tokens
+`scripts/tokens.sh web` gera `src/kit/tokens.css` com variaveis em `:root`, redefinidas sob `prefers-color-scheme: dark` e sob `[data-theme="dark"]`. Tailwind, se houver, le do `tokens.css` — nunca valores literais na classe.
 
-Se o usuario ja tem stack validada, respeite-a e adapte os gates.
+## Reuso do prototipo
+O kit e distribuido como registry: cada componente e um JSON com o codigo, instalado por CLI no app. O componente do prototipo e literalmente o de producao. Se ja existe biblioteca propria da casa, parta dela e so adicione o que falta.
 
-## Gates do pack
-| id | limite |
-|---|---|
-| `perf` | LCP <= 2.5s e INP <= 200ms no perfil movel |
-| `bundle` | JS inicial <= 200KB comprimido |
-| `a11y` | zero violacao critica em axe nas rotas principais |
-| `pwa` | instalavel, se o briefing pediu "abre no celular" |
-| `seo` | title, description e og por rota, se o briefing pediu Google |
+## Harness de captura
+Rota `/__broto?tela=<id>&estado=<estado>` em build de desenvolvimento, montando a tela com dados de exemplo. `scripts/telas.sh` chama Playwright contra ela, em viewport de celular e de desktop.
 
-## Distribuicao
-1. build de producao local passando
-2. repositorio no GitHub
-3. conectar a plataforma de hospedagem ao repo
-4. variaveis de ambiente pelo painel, digitadas pela pessoa
-5. dominio proprio, se houver; senao o dominio gratuito da plataforma
-6. smoke test contra a URL publica
+## Provas
+`build`, `smoke` (Playwright do caminho feliz), `a11y` (axe), `tipos` (`tsc --noEmit`), `lint`, `bundle` (teto declarado no `arch.yaml`), `contraste`.
 
-## Armadilhas
-- Chave de IA em variavel exposta ao cliente (prefixo publico). Gate `segredos` pega; nao dependa disso, previna.
-- Renderizar markdown do modelo como HTML sem sanitizar -> XSS.
-- Banco gratuito que hiberna: a primeira visita demora. Avise a pessoa em vez de deixar parecer quebrado.
-- Custo de funcao serverless com resposta em streaming longa: confira o limite de duracao do plano.
+## Armadilha
+Webview com brief que pede sensacao nativa vai decepcionar. Se a jornada depende de gesto, transicao continua ou componente do sistema, diga isso no estado `contrato`, nao depois.

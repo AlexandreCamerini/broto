@@ -12,3 +12,7 @@
 node_modules/
 dist/
 build/
+
+# artefatos de distribuicao
+*.zip
+*.tar.gz

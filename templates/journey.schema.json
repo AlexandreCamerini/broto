@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "journey",
+  "type": "object",
+  "required": ["versao", "app", "telas", "caminho_feliz"],
+  "properties": {
+    "versao": { "type": "integer" },
+    "app": { "type": "string" },
+    "para_quem": { "type": "string" },
+    "arte": {
+      "type": "object",
+      "description": "Direcao escolhida pela pessoa. Preenchida no estado arte.",
+      "required": ["direcao", "intencao", "escolhida_em"],
+      "properties": {
+        "direcao": { "type": "string" },
+        "intencao": { "type": "string" },
+        "referencias": { "type": "array", "items": { "type": "object",
+          "required": ["nome", "url", "captura", "roubar"],
+          "properties": { "nome": {"type":"string"}, "url": {"type":"string"}, "captura": {"type":"string"},
+            "roubar": {"type":"string"}, "evitar": {"type":"string"} } } },
+        "aposta": { "type": "string", "description": "o que so existe neste app, ou 'nenhuma' com motivo" },
+        "escolhida_em": { "type": "string" }
+      }
+    },
+    "telas": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "objetivo", "acao_primaria", "estados"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "objetivo": { "type": "string" },
+          "acao_primaria": { "type": "string", "description": "UMA. Duas e indecisao de produto." },
+          "estados": {
+            "type": "object",
+            "required": ["cheio", "vazio", "carregando", "erro"],
+            "additionalProperties": false,
+            "properties": {
+              "cheio": { "type": "string" }, "vazio": { "type": "string" },
+              "carregando": { "type": "string" }, "erro": { "type": "string" }
+            }
+          },
+          "capacidades_so": { "type": "array", "items": { "type": "string" },
+            "description": "capacidades do SO que esta tela usa; cada uma vira porta no nucleo" },
+          "origem": { "enum": ["pessoa", "inferido", "codigo"] }
+        }
+      }
+    },
+    "caminho_feliz": { "type": "array", "minItems": 2, "items": { "type": "string" },
+      "description": "sequencia de ids de tela; e o que o gate smoke testa" },
+    "assumptions": { "type": "array", "items": { "type": "object",
+      "required": ["texto", "porque"], "properties": { "texto": {"type":"string"}, "porque": {"type":"string"} } } },
+    "perguntar": { "type": "array", "items": { "type": "string" } }
+  }
+}

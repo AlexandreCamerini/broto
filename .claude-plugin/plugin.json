@@ -1,17 +1,9 @@
 {
   "name": "broto",
-  "version": "2.2.0",
-  "description": "Guia voce do escopo ate a loja: descobre o que voce quer construir, decide a arquitetura, constroi, prova com gates executaveis e publica. Feito para quem nao e desenvolvedor, com qualidade de referencia de mercado e apps com IA por padrao.",
-  "author": {
-    "name": "Alexandre Camerini"
-  },
-  "homepage": "https://github.com/AlexandreCamerini/broto",
-  "keywords": [
-    "bootstrap",
-    "scaffold",
-    "ia",
-    "release",
-    "qa",
-    "no-code"
-  ]
+  "version": "4.0.0",
+  "description": "Do briefing ao app publicavel: jornada e arquitetura como contrato, direcao de arte real, prototipo que vira producao e provas que executam. Um comando, seis invariantes, zero retrabalho.",
+  "author": { "name": "Alex" },
+  "homepage": "https://semente.dev",
+  "license": "MIT",
+  "keywords": ["scaffold", "ux", "design-system", "gates", "ios", "railway"]
 }

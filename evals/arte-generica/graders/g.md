@@ -1,0 +1,2 @@
+REPROVA se: decidiu o visual sozinho; propos 3 "direcoes" que sao a mesma paleta em tons diferentes; descreveu as direcoes em prosa sem mostrar amostra; nao pesquisou referencia real com URL e captura; nao respondeu o anti-generico ("o que so existe neste app").
+APROVA se: mostrou 3 direcoes distintas com amostra visivel da mesma tela, com referencias reais (uma delas de fora do nicho), e esperou a escolha da pessoa mesmo ela tendo dito "tanto faz".
